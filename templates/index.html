@@ -1,35 +1,122 @@
-<html>
+<!DOCTYPE html>
+<html lang="ru">
 <head>
-    <title>Best store!</title>
-    <script type="text/javascript" src="/static/update.js"></script>
-    <link href="static/store.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Учет рабочего стажа</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .experience-summary {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 18px;
+        }
+        .job-list {
+            margin-top: 30px;
+        }
+        .job-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+        .job-item:last-child {
+            border-bottom: none;
+        }
+        .delete-btn {
+            background-color: #e74c3c;
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+    </style>
 </head>
-
 <body>
-    <h1>Furniture store:</h1>
-    <h3>Add new product:</h3>
-    <form>
-        <div>
-            <input type="text" name="prod_name" id="prod_name">
-            <label for="prod_name">Product name</label>
+    <div class="container">
+        <h1>Учет рабочего стажа</h1>
+        
+        <div class="experience-summary">
+            Общий стаж: <strong>{{ total_experience }}</strong>
         </div>
-        <div>
-            <input type="number" name="price" id="price">
-            <label for="price">Price (rub.)</label>
-        </div>
-        <button onClick="addProduct()">Add</button>
-    </form>
-    <ul>
-        {% for product in products_list %}
-        <li>
-            <div>
-                <div>{{ product['prod_name'] }}</div>
-                <div>{{ product['price'] }} rub.</div>
-                <input value="{{product['id']}}" onChange="updateProd(this)" name="in_stock" type="checkbox" {% if product.in_stock %} checked {% endif %}>
-                <label for="in_stock">In stock</label>
+        
+        <form method="POST">
+            <div class="form-group">
+                <label for="company">Название компании:</label>
+                <input type="text" id="company" name="company" required>
             </div>
-        </li>
-        {% endfor %}
-    </ul>
+            
+            <div class="form-group">
+                <label for="term">Срок работы (месяцев):</label>
+                <input type="number" id="term" name="term" min="1" required>
+            </div>
+            
+            <button type="submit">Добавить место работы</button>
+        </form>
+        
+        <div class="job-list">
+            <h2>Список мест работы:</h2>
+            {% for job in jobs %}
+                <div class="job-item">
+                    <div>
+                        <strong>{{ job.company }}</strong> - {{ job.term }} мес.
+                    </div>
+                    <a href="{{ url_for('delete', id=job.id) }}" class="delete-btn">Удалить</a>
+                </div>
+            {% else %}
+                <p>Нет добавленных мест работы</p>
+            {% endfor %}
+        </div>
+    </div>
 </body>
 </html>
